@@ -10,7 +10,7 @@ export function Pagination() {
       spacing={6}
     >
       <Box>
-        <strong>0</strong> - <strong>10</strong> de <strong>100</strong>
+        <strong>0</strong> - <strong>15</strong> de <strong>100</strong>
       </Box>
       <Stack
         direction="row"
