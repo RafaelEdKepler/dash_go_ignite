@@ -1,22 +1,25 @@
-import { Box, Button, Checkbox, Flex, Heading, Icon, IconButton, Table, Tbody, Td, Text, Th, Thead, Tr, useBreakpointValue } from "@chakra-ui/react";
+import { Box, Button, Checkbox, Flex, Heading, Icon, IconButton, Spinner, Table, Tbody, Td, Text, Th, Thead, Tr, useBreakpointValue } from "@chakra-ui/react";
 import Link from "next/link";
-import { useEffect } from "react";
+import { useQuery } from 'react-query';
 import { RiAddLine, RiPencilLine } from "react-icons/ri";
 import Header from "../../components/Header";
 import { Pagination } from "../../components/Pagination";
 import { Sidebar } from "../../components/Sidebar";
 
 export default function UserList() {
+  const { data, isLoading, error } = useQuery('users', async () => {
+    const response = await fetch('http://localhost:3000/api/users')
+    const data = response.json();
+
+    return data;
+  });
+
+  console.log(data);
+
   const isWideVersion = useBreakpointValue({
     base: false,
     lg: true
   })
-
-  useEffect(() => {
-    fetch('http://localhost:3000/api/users')
-      .then(response => response.json())
-      .then(data => console.log(data))
-  }, [])
 
   return (
     <Box>
@@ -37,47 +40,63 @@ export default function UserList() {
               </Button>
             </Link>
           </Flex>
-          <Table colorScheme="whiteAlpha">
-            <Thead>
-              <Tr>
-                <Th px={["4", "4", "6"]} color="gray.300" width="8">
-                  <Checkbox colorScheme="pink"/>
-                </Th>
-                <Th>Usuário</Th>
-                { isWideVersion && <Th>Data de cadastro</Th>}
-                <Th width="8"/>
-              </Tr>
-            </Thead>
-            <Tbody>
-              <Tr>
-                <Td px={["4", "4", "6"]}>
-                  <Checkbox colorScheme="pink"/>
-                </Td>
-                <Td>
-                  <Box>
-                    <Text fontWeight="bold">Rafael Kepler</Text>
-                    <Text fontWeight="sm" color="gray.300">rafael.kepler@hotmail.com</Text>
-                  </Box>
-                </Td>
-                {isWideVersion && (
-                  <Td>
-                    04 de abril de 2021
+          {isLoading ? (
+            <Flex
+              justify="center"
+            >
+              <Spinner />
+            </Flex>
+          ) : error ? (
+            <Flex
+              justify="center"
+            >
+              <Text>Falha ao carregar lista de usuários </Text>
+            </Flex>
+          ) : (
+            <>
+              <Table colorScheme="whiteAlpha">
+              <Thead>
+                <Tr>
+                  <Th px={["4", "4", "6"]} color="gray.300" width="8">
+                    <Checkbox colorScheme="pink"/>
+                  </Th>
+                  <Th>Usuário</Th>
+                  { isWideVersion && <Th>Data de cadastro</Th>}
+                  <Th width="8"/>
+                </Tr>
+              </Thead>
+              <Tbody>
+                <Tr>
+                  <Td px={["4", "4", "6"]}>
+                    <Checkbox colorScheme="pink"/>
                   </Td>
-                )}
-                <Td>
-                  {isWideVersion ? (
-                    <Button as="a" size="sm" fontSize="16" colorScheme="purple" leftIcon={<Icon as={RiPencilLine}/>}>
-                      Editar
-                    </Button>
-                  ) : (
-                    <IconButton aria-label="Edit user" as="a" size="sm" fontSize="16" colorScheme="purple" icon={<Icon as={RiPencilLine}/>}/>
+                  <Td>
+                    <Box>
+                      <Text fontWeight="bold">Rafael Kepler</Text>
+                      <Text fontWeight="sm" color="gray.300">rafael.kepler@hotmail.com</Text>
+                    </Box>
+                  </Td>
+                  {isWideVersion && (
+                    <Td>
+                      04 de abril de 2021
+                    </Td>
                   )}
+                  <Td>
+                    {isWideVersion ? (
+                      <Button as="a" size="sm" fontSize="16" colorScheme="purple" leftIcon={<Icon as={RiPencilLine}/>}>
+                        Editar
+                      </Button>
+                    ) : (
+                      <IconButton aria-label="Edit user" as="a" size="sm" fontSize="16" colorScheme="purple" icon={<Icon as={RiPencilLine}/>}/>
+                    )}
 
-                </Td>
-              </Tr>
-            </Tbody>
-          </Table>
-          <Pagination/>
+                  </Td>
+                </Tr>
+              </Tbody>
+            </Table>
+            <Pagination/>
+          </>
+          )}
         </Box>
       </Flex>
     </Box>
