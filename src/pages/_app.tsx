@@ -4,6 +4,7 @@ import { theme } from '../styles/theme';
 import { SidebarDrawerContextProvider } from '../contexts/SidebarDrawerContext';
 import { makeServer } from '../services/mirage';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { ReactQueryDevtools } from 'react-query/devtools';
 
 
 if (process.env.NODE_ENV !== 'production') {
@@ -17,6 +18,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     <ChakraProvider resetCSS theme={theme}>
       <SidebarDrawerContextProvider>
         <QueryClientProvider client={queryClient }>
+          <ReactQueryDevtools/>
           <Component {...pageProps} />
         </QueryClientProvider>
       </SidebarDrawerContextProvider>
