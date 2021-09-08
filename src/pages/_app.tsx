@@ -1,9 +1,10 @@
 import { AppProps } from 'next/app';
 import { ChakraProvider } from '@chakra-ui/react';
+import { queryClient } from '../services/queryClient';
 import { theme } from '../styles/theme';
 import { SidebarDrawerContextProvider } from '../contexts/SidebarDrawerContext';
 import { makeServer } from '../services/mirage';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 
 
@@ -12,7 +13,6 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const queryClient = new QueryClient();
 
   return (
     <ChakraProvider resetCSS theme={theme}>

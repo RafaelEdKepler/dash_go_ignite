@@ -1,11 +1,15 @@
 import { useState } from 'react';
-import { Box, Button, Checkbox, Flex, Heading, Icon, IconButton, Spinner, Table, Tbody, Td, Text, Th, Thead, Tr, useBreakpointValue } from "@chakra-ui/react";
+import { Box, Button, Checkbox, Flex, Heading, Icon, IconButton, Spinner, Table,
+  Tbody, Td, Text, Th, Thead, Tr, useBreakpointValue, Link as ChakraLink } from "@chakra-ui/react";
 import Link from "next/link";
 import { RiAddLine, RiPencilLine } from "react-icons/ri";
 import Header from "../../components/Header";
 import { Pagination } from "../../components/Pagination";
 import { Sidebar } from "../../components/Sidebar";
 import { useUsers } from "../../services/hooks/useUsers";
+import { queryClient } from '../../services/queryClient';
+import { api } from '../../services/api';
+import { MouseEventHandler } from 'toasted-notes/node_modules/@types/react';
 
 export default function UserList() {
   const [page, setPage] = useState(1);
@@ -15,6 +19,20 @@ export default function UserList() {
     base: false,
     lg: true
   })
+
+  interface UserData extends MouseEventHandler {
+    id: number;
+  }
+
+  async function handlePrefetchUser(userId: number) {
+    await queryClient.prefetchQuery(['user', userId], async () => {
+      const response = await api.get(`users/${userId}`);
+
+      return response.data;
+    }, {
+      staleTime: 1000 * 60 * 10, // 10 minutos
+    })
+  }
 
   return (
     <Box>
@@ -71,7 +89,9 @@ export default function UserList() {
                     </Td>
                     <Td>
                       <Box>
-                        <Text fontWeight="bold">{user.name}</Text>
+                        <ChakraLink color="purple.400" onMouseEnter={(user: UserData) => handlePrefetchUser(user.id)}>
+                          <Text fontWeight="bold">{user.name}</Text>
+                        </ChakraLink>
                         <Text fontWeight="sm" color="gray.300">{user.email}</Text>
                       </Box>
                     </Td>
