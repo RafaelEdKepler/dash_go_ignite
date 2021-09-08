@@ -20,11 +20,8 @@ export default function UserList() {
     lg: true
   })
 
-  interface UserData extends MouseEventHandler {
-    id: number;
-  }
 
-  async function handlePrefetchUser(userId: number) {
+  async function handlePrefetchUser(userId: string) {
     await queryClient.prefetchQuery(['user', userId], async () => {
       const response = await api.get(`users/${userId}`);
 
@@ -89,7 +86,7 @@ export default function UserList() {
                     </Td>
                     <Td>
                       <Box>
-                        <ChakraLink color="purple.400" onMouseEnter={(user: UserData) => handlePrefetchUser(user.id)}>
+                        <ChakraLink color="purple.400" onMouseEnter={(user) => handlePrefetchUser(user.id)}>
                           <Text fontWeight="bold">{user.name}</Text>
                         </ChakraLink>
                         <Text fontWeight="sm" color="gray.300">{user.email}</Text>
